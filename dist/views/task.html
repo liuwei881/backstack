@@ -1,0 +1,459 @@
+<div class="portlet box blue"> <div class="portlet-title"> <div class="caption"> <i class="fa fa-cogs"></i>任务 </div> <div class="tools"> <a class="glyphicon glyphicon-plus" href="javascript:;"> </a> <button type="button" class="btn red-haze btn-sm" ng-click="Create();">新建 </button> </div> </div> <div class="portlet-body"> <div class="row"> <div class="col-md-6 col-sm-6"> <label>Filter: <input type="search" class="form-control input-large input-inline" placeholder="IP/Path/Name" ng-model="searchKey"> </label> <a href="javascript:void(0);" ng-click="Search(searchKey)" class="btn btn-sm btn-primary">搜索</a> <a href="javascript:void(0);" ng-click="Search('')" class="btn btn-sm btn-primary">重置</a> </div> </div> <table class="table table-bordered"> <tbody> <tr> <th>任务ID <th>任务名称[EN] <th>描述 <th>任务类型 <th>过程 <th>状态 <th>创建人 <th>创建时间 <th>上次修改 <th>最后更新时间 <th>操作  <tr ng-repeat="o in rows"> <td>{{ o.TaskId }} <td>{{ o.Name }} [{{ o.EName }}] <td title="{{ o.Desc }}">{{ o.Desc | cut:true:20:'...'}} <td>{{ o.Type }} <td>{{ o.FromIp }} [ {{ o.FromPos }} ]<br> -> {{ o.ToIp }} [ {{ o.ToPos }} ] <td>{{ o.Status}} <td>{{ o.CreateId }} <td>{{ o.CreateTime }} <td>{{ o.UpdateId }} <td>{{ o.UpdateTime }} <td> <div class="btn-group"> <button type="button" class="btn btn-primary btn-sm" ng-click="detail($index)">查看</button> <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span> <span class="sr-only">Toggle Dropdown</span> </button> <ul class="dropdown-menu"> <li><a href="javascript:;" ng-click="edit($index)">编辑</a></li> <li role="separator" class="divider"></li> <li><a href="javascript:;" ng-click="changeStatus(o.TaskId)">启用/禁用</a></li> <li role="separator" class="divider"></li> <li><a href="javascript:;" ng-click="statics(o.TaskId)">报表</a></li> </ul> </div>    </table> <paging class="small" page="currentPage" page-size="pageSize" total="total" adjacent="{{adjacent}}" dots="{{dots}}" scroll-top="{{scrollTop}}" hide-if-empty="{{hideIfEmpty}}" ul-class="{{ulClass}}" active-class="{{activeClass}}" disabled-class="{{disabledClass}}" show-prev-next="{{showPrevNext}}" paging-action="pageAction( page )"> </paging> </div> </div> <script type="text/ng-template" id="add.html"><div class="modal-header">
+        <div class="caption">
+            <h4>{{ title.title }}</h4>
+        </div>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal" role="form">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">任务名称</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="任务名称"
+                                       ng-model="item.Name">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">任务类型</label>
+
+                            <div class="col-md-9">
+                                <select ng-options='t.AttrId as t.Name  for t in title.etcTaskType' class="form-control input-inline input-medium" ng-model="item.Type">
+                                </select>
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">源IP</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="源IP"
+                                       ng-model="item.FromIp">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">源路径</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="源路径"
+                                       ng-model="item.FromPos">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">目标IP</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="目标IP"
+                                       ng-model="item.ToIp">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">目标路径</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="目标路径"
+                                       ng-model="item.ToPos">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">是否启用</label>
+
+                            <div class="col-md-9">
+                                <select class="form-control input-inline input-medium" placeholder="是否启用"  ng-model="item.Status">
+                                    <option ng-repeat='t in title.etcIsDisabled' value="{{ t.AttrId }}">{{t.Name}}</option>
+                                </select>
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">任务名(EN)</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="rsync任务名(不含中文及特殊符号)"
+                                       ng-model="item.EName">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">描述</label>
+
+                            <div class="col-md-9">
+                                <textarea class="form-control input-inline input-medium" placeholder="描述"
+                                       ng-model="item.Desc"></textarea>
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="col-md-12"  ng-switch on="item.Type">
+                                <pre ng-model='item.Comand'>
+                                    <div ng-switch-when="11"><ng-include src="'views/type_rsync_pull.html'"></ng-include></div>
+                                    <div ng-switch-when="12"><ng-include src="'views/type_rsync_push.html'"></ng-include></div>
+                                    <div ng-switch-when="13"><ng-include src="'views/type_mysqldump.html'"></ng-include></div>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="Save()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancle</button>
+    </div></script> <script type="text/ng-template" id="edit.html"><div class="modal-header">
+        <div class="caption">
+            <h4>{{ title.title }}</h4>
+        </div>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal" role="form">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">任务名称</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{item.Name}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">任务类型</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{item.Type}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">源IP</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="源IP"
+                                       ng-model="item.FromIp">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">源路径</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="源路径"
+                                       ng-model="item.FromPos">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">目标IP</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="目标IP"
+                                       ng-model="item.ToIp">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">目标路径</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="目标路径"
+                                       ng-model="item.ToPos">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">是否启用</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.Status }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">任务名(EN)</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="rsync任务名(不含中文及特殊符号)"
+                                       ng-model="item.EName">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">描述</label>
+
+                            <div class="col-md-9">
+                                <textarea class="form-control input-inline input-medium" placeholder="描述"
+                                       ng-model="item.Desc"></textarea>
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="col-md-12"  ng-switch on="item.TypeNum">
+                                <pre ng-model='item.Comand'>
+                                    <div ng-switch-when="11"><ng-include src="'views/type_rsync_pull.html'"></ng-include></div>
+                                    <div ng-switch-when="12"><ng-include src="'views/type_rsync_push.html'"></ng-include></div>
+                                    <div ng-switch-when="13"><ng-include src="'views/type_mysqldump.html'"></ng-include></div>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" ng-model="item.TaskId" />
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="Save()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancle</button>
+    </div></script> <script type="text/ng-template" id="detail.html"><div class="modal-header">
+        <div class="caption">
+            <h4>{{ title.title }}</h4>
+        </div>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal" role="form">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">任务名称</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{item.Name}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">任务类型</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.Type }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">源IP</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.FromIp }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">源路径</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.FromPos }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">目标IP</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.ToIp }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">目标路径</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.ToPos }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">是否启用</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.Status }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">任务名(EN)</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{item.EName}}</p>
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">创建时间</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.CreateTime }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">创建人</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.CreateId }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">最后更改</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.UpdateTime }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">修改人</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.UpdateId }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">描述</label>
+
+                            <div class="col-md-9">
+                                <textarea class="form-control input-inline input-medium" placeholder="描述"
+                                       ng-model="item.Desc"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="col-md-12"  ng-switch on="item.TypeNum">
+                                <pre ng-model='item.Comand'>
+                                    <div ng-switch-when="11"><ng-include src="'views/type_rsync_pull.html'"></ng-include></div>
+                                    <div ng-switch-when="12"><ng-include src="'views/type_rsync_push.html'"></ng-include></div>
+                                    <div ng-switch-when="13"><ng-include src="'views/type_mysqldump.html'"></ng-include></div>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </form>
+    </div></script> <script type="text/ng-template" id="statics.html"><div class="modal-header">
+        <div class="caption">
+            <h4>{{ title }}</h4>
+        </div>
+    </div>
+    <div class="modal-body">
+        <highchart id="chart1" config="item"></highchart>
+    </div></script>

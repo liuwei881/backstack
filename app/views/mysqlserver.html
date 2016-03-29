@@ -1,0 +1,318 @@
+<div class="portlet box blue">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-cogs"></i>Mysql服务器管理
+        </div>
+    </div>
+
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <label>Filter:
+                    <input type="search" class="form-control input-large input-inline" placeholder="服务器IP/授权IP/服务器名称/认证账户" ng-model='searchKey'>
+                </label>
+                <a href="javascript:void(0);" ng-click="Search(searchKey)" class="btn btn-sm btn-primary">搜索</a>
+                <a href="javascript:void(0);" ng-click="Search('')" class="btn btn-sm btn-primary">重置</a>
+            </div>
+        </div>
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <th>服务器ID</th>
+                <th>服务器名称</th>
+                <th>权限</th>
+                <th>授权库名</th>
+                <th>授权用户</th>
+                <th>授权IP</th>
+                <th>授权密码</th>
+                <th>创建时间</th>
+                <th>最后更新时间</th>
+                <th>操作</th>
+            </tr>
+
+            <tr ng-repeat="o in rows">
+                <td>{{ o.MysqlId }}</td>
+                <td>{{ o.NameServer }}</td>
+                <td>{{ o.Permission }}</td>
+                <td>{{ o.DbName }}</td>
+                <td>{{ o.AuthName }}</td>
+                <td>{{ o.AuthIp }}</td>
+                <td>{{ o.AuthPasswd }}</td>
+                <td>{{ o.CreateTime }}</td>
+                <td>{{ o.UpdateTime }}</td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary btn-sm" ng-click="detail($index)">查看</button>
+                        <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="javascript:;" ng-click="edit($index)">编辑</a></li>
+                            <li><a href="javascript:;" ng-click="Delete($index)">删除</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+        <paging
+                class="small"
+                page="currentPage"
+                page-size="pageSize"
+                total="total"
+                adjacent="{{adjacent}}"
+                dots="{{dots}}"
+                scroll-top="{{scrollTop}}"
+                hide-if-empty="{{hideIfEmpty}}"
+                ul-class="{{ulClass}}"
+                active-class="{{activeClass}}"
+                disabled-class="{{disabledClass}}"
+                show-prev-next="{{showPrevNext}}"
+                paging-action="pageAction( page )">
+        </paging>
+    </div>
+</div>
+
+<script type="text/ng-template" id="edit.html">
+    <div class="modal-header">
+        <div class="caption">
+            <h4>{{ title.title }}</h4>
+        </div>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal" role="form">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">服务器名称</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="名称"
+                                       ng-model="item.NameServer">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">权限</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="权限"
+                                       ng-model="item.Permission">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">授权库名</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="授权库名"
+                                       ng-model="item.DbName">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">授权用户</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="授权用户"
+                                       ng-model="item.AuthName">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">授权IP</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="授权Ip"
+                                       ng-model="item.AuthIp">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">授权密码</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="授权密码"
+                                       ng-model="item.AuthPasswd">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" ng-model="item.MysqlId" />
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="Save()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancle</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="detail.html">
+    <div class="modal-header">
+        <div class="caption">
+            <h4>{{ title.title }}</h4>
+        </div>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal" role="form">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">服务器名称</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{item.NameServer}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">权限</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.Permission }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">授权库名</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.DbName }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">授权用户</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.AuthName }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">授权IP</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.AuthIp }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">授权密码</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.AuthPasswd }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">创建时间</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.CreateTime }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">创建人</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.CreateId }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">最后更改</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.UpdateTime }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">修改人</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.UpdateId }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </form>
+    </div>
+</script>
+
+<script type="text/ng-template" id="delete.html">
+    <div class="modal-header">
+        <div class="caption">
+            <h4>{{ title.title }}</h4>
+        </div>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal" role="form">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                           确定要删除{{ item.NameServer }}服务器？
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="Delete()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancle</button>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="statics.html">
+    <div class="modal-header">
+        <div class="caption">
+            <h4>{{ title }}</h4>
+        </div>
+    </div>
+    <div class="modal-body">
+        <highchart id="chart1" config="item"></highchart>
+    </div>
+</script>

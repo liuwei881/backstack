@@ -1,0 +1,89 @@
+<div class="modal-header">
+        <div class="caption">
+            <h4>{{title.title}}</h4>
+        </div>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal" role="form">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">解析域名</label>
+                            <div class="col-md-9">
+                               <input type="text" class="form-control input-inline input-medium" placeholder="解析域名"
+                                       ng-model="item.DomainName">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">解析IP</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="解析IP"
+                                       ng-model="item.DomainIp">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">后端IP</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="后端IP"
+                                       ng-model="item.ProxyIp">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">端口</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="端口"
+                                       ng-model="item.ProxyPort">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">目录</label>
+
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-inline input-medium" placeholder="目录"
+                                       ng-model="item.Document">
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">描述备注</label>
+
+                            <div class="col-md-9">
+                                <textarea class="form-control input-inline input-medium" placeholder="描述备注"
+                                       ng-model="item.Desc"></textarea>
+                                <span class="help-inline"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+        </form>
+    </div>
+    <input type="hidden" ng-model="item.ServerId" />
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="Save()">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancle</button>
+    </div>

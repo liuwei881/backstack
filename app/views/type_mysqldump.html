@@ -1,0 +1,3 @@
+mysqldump -h {{item.FromIp}} -uroot -p  {{item.EName}} > {{item.ToPos}}/{{item.EName}}.sql
+<br /><br />
+curl -d '{"TaskId":'{{item.TaskId}}',"Type":13,"Name":"{{item.EName}}","Status":9,"StartTime":开始时间(UNIX时间戳),"EndTime":结束时间(UNIX时间戳),"FileSize":'0M'}'  'http://10.10.112.199/api/tasklog'

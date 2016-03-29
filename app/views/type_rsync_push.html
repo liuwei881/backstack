@@ -1,0 +1,11 @@
+[{{item.EName}}]<br/>
+path = {{item.ToPos}}<br/>
+ignore errors<br/>
+read only = no<br/>
+list = yes<br/>
+hosts allow = {{item.FromIp}}<br/>
+secrets file = /etc/rsync.pwd<br/>
+<br />
+rsync -avz --progress  {{item.FromPos}} rsync_user@{{item.ToIp}}::{{item.EName}} --password-file=/etc/rsync.pwd<br/>
+<br />
+curl -d '{"TaskId":"{{item.TaskId}}","Type":12,"Name":"{{item.EName}}","Status":9,"StartTime":开始时间(UNIX时间戳),"EndTime":结束时间(UNIX时间戳),"FileSize":"0M"}'  'http://10.10.112.199/api/tasklog'

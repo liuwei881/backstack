@@ -1,0 +1,1 @@
+var etcYesNo=[{'AttrId':'4','Name':'是'},{'AttrId':'5','Name':'否'}];var etcIsDisabled=[{'AttrId':'7','Name':'启用'},{'AttrId':'8','Name':'禁用'}];var etcSuccFail=[{'AttrId':'9','Name':'成功'},{'AttrId':'10','Name':'失败'}];var etcTaskType=[{'AttrId':'11','Name':'rsync_pull'},{'AttrId':'12','Name':'rsync_push'},{'AttrId':'13','Name':'mysqldump'}];

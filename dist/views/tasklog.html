@@ -1,0 +1,48 @@
+<div class="portlet box blue"> <div class="portlet-title"> <div class="caption"> <i class="fa fa-cogs"></i>任务日志 </div> </div> <div class="portlet-body"> <div class="row"> <div class="col-md-6 col-sm-6"> <label>Filter: <input type="search" class="form-control input-large input-inline" placeholder="Name" ng-model="searchKey"> </label> <a href="javascript:void(0);" ng-click="Search(searchKey)" class="btn btn-sm btn-primary">搜索</a> <a href="javascript:void(0);" ng-click="Search('')" class="btn btn-sm btn-primary">重置</a> </div> </div> <table class="table table-bordered"> <tbody> <tr> <th>ID <th>任务名称[EN] <th>任务ID <th>任务类型 <th>文件大小 <th>过期时间 <th>执行结果 <th>执行时间 <th>执行结束时间 <th>来源IP <th>更新命令  <tr ng-repeat="o in rows"> <td>{{ o.LogId }} <td>{{ o.Name }} <td>{{ o.TaskId }} <td>{{ o.Type }} <td>{{ o.FileSize }} <td>{{ o.ExpireTime }} <td>{{ o.Status}} <td>{{ o.StartTime }} <td>{{ o.EndTime }} <td>{{ o.FromIp }} <td><button type="button" class="btn btn-primary btn-sm" ng-click="detail($index)">查看</button>   </table> <paging class="small" page="currentPage" page-size="pageSize" total="total" adjacent="{{adjacent}}" dots="{{dots}}" scroll-top="{{scrollTop}}" hide-if-empty="{{hideIfEmpty}}" ul-class="{{ulClass}}" active-class="{{activeClass}}" disabled-class="{{disabledClass}}" show-prev-next="{{showPrevNext}}" paging-action="pageAction( page )"> </paging> </div> </div> <script type="text/ng-template" id="detail.html"><div class="modal-header">
+        <div class="caption">
+            <h4>{{ title.title }}</h4>
+        </div>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal" role="form">
+            <div class="form-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">日志ID</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{item.LogId}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">任务名称</label>
+
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.Name }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">任务类型</label>
+                            <div class="col-md-9">
+                                <p class="form-control-static">{{ item.Type }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                                <pre>
+curl -X PUT -d '{"LogId":{{item.LogId}},"Status":"9/10","FileSize":"{{item.FileSize}}","ExpireTime":"文件保存时长","EndTime":UNIX时间戳}' "http://10.10.102.11/api/tasklog"
+                                </pre>
+                    </div>
+                </div>
+        </form>
+    </div></script>
